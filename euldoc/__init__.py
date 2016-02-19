@@ -13,6 +13,12 @@ import urllib2
 import pandoc
 from pandoc.types import *
 
+# Eul's Doc Metadata
+from .about import *
+
+
+# Helpers
+# ------------------------------------------------------------------------------
 def iter(elt, enter=None, exit=None):
     yield elt
     if enter is not None:
@@ -42,6 +48,9 @@ def find_parent(doc, elt):
         if elt is elt_:
              return parent
 
+
+# Transforms
+# ------------------------------------------------------------------------------
 def match_lightweight_section(elt):
     if type(elt) is Para:
         content = elt[0]
@@ -177,6 +186,9 @@ def today(doc):
     meta["date"] = MetaInlines(inlines)
     return doc
 
+
+# Main Entry Point
+# ------------------------------------------------------------------------------
 def main():
     doc = pandoc.read(json.load(sys.stdin))
 
@@ -187,8 +199,4 @@ def main():
     doc = today(doc)
 
     print json.dumps(pandoc.write(doc))
-
-
-if __name__ == "__main__":
-    main()
 
