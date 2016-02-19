@@ -2,7 +2,7 @@
 
 metadata = dict(
   __name__        = "eul-doc",
-  __version__     = "1.0.2",
+  __version__     = "1.0.3",
   __license__     = "MIT License",  
   __author__      = u"Sébastien Boisgérault <Sebastien.Boisgerault@gmail.com>",
   __url__         = "https://github.com/boisgera/eul-doc",
