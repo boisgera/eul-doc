@@ -59,12 +59,18 @@ def match_lightweight_section(elt):
     return False
 
 def lightweight_sections(doc, level=6):
-    for para in filter(match_lightweight_section, iter(doc)):
+    paras = filter(match_lightweight_section, iter(doc))
+    for para in paras:
         blocks = find_parent(doc, para)
         content = para[0].pop(0)[0]
         if len(para[0]) >= 1 and para[0][0] == Space():
-          para[0].pop(0)
-        index = blocks.index(para)
+            para[0].pop(0)
+        # The function `blocks.index` -- 
+        # that checks equality instead of identity --
+        # won't always work.
+        for index, elt in enumerate(blocks):
+            if elt is para:
+              break
         header = Header(level, ("", [], []), content)
         blocks.insert(index, header)
     return doc
@@ -193,10 +199,10 @@ def main():
     doc = pandoc.read(json.load(sys.stdin))
 
     doc = lightweight_sections(doc)
-    doc = auto_identifiers(doc)
-    doc = autolink_headings(doc)
-    doc = convert_images(doc)
-    doc = today(doc)
+    #doc = auto_identifiers(doc)
+    #doc = autolink_headings(doc)
+    #doc = convert_images(doc)
+    #doc = today(doc)
 
     print json.dumps(pandoc.write(doc))
 
