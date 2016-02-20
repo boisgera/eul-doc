@@ -180,6 +180,9 @@ def convert_images(doc):
         image[:] = (attr, inlines, new_target)
     return doc
 
+# Alignement of tombstone are an issue when they are the single elt on the line.
+# This is a general issue with single math span, not something specific of the
+# tombstone ... line-height hack doesn't work either ...
 def hfill(doc):
     def match(elt):
         if type(elt) is RawInline:
@@ -194,7 +197,9 @@ def hfill(doc):
         for index, elt in enumerate(inlines):
             if elt is hfill_:
               break
-        span = Span(("", [], [("style", "float:right;")]), inlines[index:])
+        style = "float:right;"
+        zwnj = RawInline(Format("html"), u"&zwnj;") # I hate you CSS.
+        span = Span(("", [], [("style", style)]), [zwnj] + inlines[index:])
         inlines[:] = inlines[:index] + [span]
     return doc
 
