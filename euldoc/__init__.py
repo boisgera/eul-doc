@@ -199,10 +199,10 @@ def main():
     doc = pandoc.read(json.load(sys.stdin))
 
     doc = lightweight_sections(doc)
-    #doc = auto_identifiers(doc)
-    #doc = autolink_headings(doc)
-    #doc = convert_images(doc)
-    #doc = today(doc)
+    doc = auto_identifiers(doc)
+    doc = autolink_headings(doc)
+    doc = convert_images(doc)
+    doc = today(doc)
 
     print json.dumps(pandoc.write(doc))
 
