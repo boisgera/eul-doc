@@ -180,6 +180,24 @@ def convert_images(doc):
         image[:] = (attr, inlines, new_target)
     return doc
 
+def hfill(doc):
+    def match(elt):
+        if type(elt) is RawInline:
+            format, text = elt[:]
+            if format == Format("tex") and text.strip() == u"\\hfill":
+                return True
+        return False
+
+    hfills = [elt for elt in iter(doc) if match(elt)]
+    for hfill_ in hfills:
+        inlines = find_parent(doc, hfill_)
+        for index, elt in enumerate(inlines):
+            if elt is hfill_:
+              break
+        span = Span(("", [], [("style", "float:right;")]), inlines[index:])
+        inlines[:] = inlines[:index] + [span]
+    return doc
+
 def today(doc):
     date = datetime.date.today()
     day = unicode(date.day)
@@ -202,6 +220,7 @@ def main():
     doc = auto_identifiers(doc)
     doc = autolink_headings(doc)
     doc = convert_images(doc)
+    doc = hfill(doc)
     doc = today(doc)
 
     print json.dumps(pandoc.write(doc))
