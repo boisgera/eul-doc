@@ -42,7 +42,7 @@ def iter_path(elt):
         yield path + [elt_]
 
 def find_parent(doc, elt):
-    for path in iter_poath(doc):
+    for path in iter_path(doc):
         elt_ = path[-1]
         parent = path[-2] if len(path) >= 2 else None
         if elt is elt_:
