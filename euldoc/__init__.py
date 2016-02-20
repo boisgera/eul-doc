@@ -63,8 +63,10 @@ def lightweight_sections(doc, level=6):
     for para in paras:
         blocks = find_parent(doc, para)
         content = para[0].pop(0)[0]
+        zwnj = RawInline(Format("html"), u"&zwnj;")
         if len(para[0]) >= 1 and para[0][0] == Space():
             para[0].pop(0)
+        para[0].insert(0, zwnj)
         # The function `blocks.index` -- 
         # that checks equality instead of identity --
         # won't always work.
