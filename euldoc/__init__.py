@@ -52,13 +52,13 @@ def find_parent(doc, elt):
 # Transforms
 # ------------------------------------------------------------------------------
 def match_lightweight_section(elt):
-    if type(elt) is Para:
+    if type(elt) in (Para, Plain):
         content = elt[0]
         if len(content) >= 1 and type(content[0]) is Strong:
             return True
     return False
 
-def lightweight_sections(doc, level=6):
+def lightweight_sections(doc, level=3):
     paras = filter(match_lightweight_section, iter(doc))
     for para in paras:
         blocks = find_parent(doc, para)
@@ -97,16 +97,16 @@ def string_id(inlines):
             part = inline[0]
         elif type_ in (Space, SoftBreak, LineBreak):
             part = " "
-        elif type_ in (Emph, Strikeout, Subscript, SmallCaps, Link, Image):
+        elif type_ in (Emph, Strikeout, Subscript, SmallCaps):
             part = string_id(inline[0])
-        elif type_ in (Cite, Quoted, Span):
+        elif type_ in (Cite, Image, Link, Quoted, Span):
             part = string_id(inline[1])
         elif type_ in (Code, Math, RawInline):
             part = inline[1]
         elif type_ is Note:
             part = ""
         else:
-            assert "invalid type {0!r}".format(type_)
+            raise TypeError("invalid type {0!r}".format(type_))
         parts.append(part)
     text = "".join(parts)
     text = text.lower()
