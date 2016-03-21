@@ -68,7 +68,7 @@ info = dict(
                    "packages": setuptools.find_packages()
                  },
   requirements = {
-                   "install_requires": ["pandoc==1.0.0a14"],
+                   "install_requires": ["pandoc>=1.0.0a14"],
                  }, 
   scripts      = {
                    "entry_points": {
