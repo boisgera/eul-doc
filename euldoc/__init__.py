@@ -16,6 +16,12 @@ from pandoc.types import *
 # Eul's Doc Metadata
 from .about import *
 
+# TODO
+# ------------------------------------------------------------------------------
+#
+#   - support profiles (--html by default, implement --pdf too)
+#   - support date for all profiles (if not hard-coded)
+#  
 
 # Helpers
 # ------------------------------------------------------------------------------
@@ -206,29 +212,37 @@ def hfill(doc):
     return doc
 
 def today(doc):
-    date = datetime.date.today()
-    day = unicode(date.day)
-    year = unicode(date.year)
-    months = u"""January February March April May June July August 
-                 September October November December""".split()
-    month = months[date.month - 1]
-    meta = doc[0][0]
-    inlines = [Str(month), Space(), Str(day + ","), Space(), Str(year)]
-    meta["date"] = MetaInlines(inlines)
+    """
+    Add the current date in metadata if the field is empty.
+    """
+    metadata = doc[0][0]
+    if u"date" not in metadata:
+        date = datetime.date.today()
+        day = unicode(date.day)
+        year = unicode(date.year)
+        months = u"""January February March April May June July August 
+                     September October November December""".split()
+        month = months[date.month - 1]
+        meta = doc[0][0]
+        inlines = [Str(month), Space(), Str(day + ","), Space(), Str(year)]
+        meta["date"] = MetaInlines(inlines)
     return doc
 
 
 # Main Entry Point
 # ------------------------------------------------------------------------------
 def main():
+    args = sys.argv[1:]
     doc = pandoc.read(json.load(sys.stdin))
-
-    doc = lightweight_sections(doc)
-    doc = auto_identifiers(doc)
-    doc = autolink_headings(doc)
-    doc = convert_images(doc)
-    doc = hfill(doc)
-    doc = today(doc)
+    if "--pdf" in args:
+        doc = today(doc)
+    else:
+        doc = lightweight_sections(doc)
+        doc = auto_identifiers(doc)
+        doc = autolink_headings(doc)
+        doc = convert_images(doc)
+        doc = hfill(doc)
+        doc = today(doc)
 
     print json.dumps(pandoc.write(doc))
 
