@@ -57,15 +57,23 @@ def find_parent(doc, elt):
 
 # Transforms
 # ------------------------------------------------------------------------------
-def match_lightweight_section(elt):
-    if type(elt) in (Para, Plain):
-        content = elt[0]
-        if len(content) >= 1 and type(content[0]) is Strong:
-            return True
-    return False
-
 def lightweight_sections(doc, level=3):
-    paras = filter(match_lightweight_section, iter(doc))
+    list_count = [0]
+    List = (OrderedList, BulletList, DefinitionList)
+    def enter(elt):
+        if isinstance(elt, List):
+            list_count[0] += 1
+    def exit(elt):
+        if isinstance(elt, List):
+            list_count[0] -= 1
+    def match(elt):
+        if list_count[0] == 0 and type(elt) in (Para, Plain):
+            content = elt[0]
+            if len(content) >= 1 and type(content[0]) is Strong:
+                return True
+        return False
+
+    paras = filter(match, iter(doc, enter, exit))
     for para in paras:
         blocks = find_parent(doc, para)
         content = para[0].pop(0)[0]
@@ -148,6 +156,7 @@ def auto_identifiers(doc):
                     header[:] = level, attr, inlines
     return doc
 
+# TODO: solve the duplicated anchor in TOC.
 def autolink_headings(doc):
     # TODO: link the document title (if any) to "#"
     meta = doc[0][0]
