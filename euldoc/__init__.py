@@ -216,7 +216,7 @@ def hfill(doc):
               break
         style = "float:right;"
         zwnj = RawInline(Format("html"), u"&zwnj;") # I hate you CSS.
-        span = Span(("", [], [("style", style)]), [zwnj] + inlines[index:])
+        span = Span(("", ["tombstone"], [("style", style)]), [zwnj] + inlines[index:])
         inlines[:] = inlines[:index] + [span]
     return doc
 
