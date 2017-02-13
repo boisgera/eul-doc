@@ -57,6 +57,9 @@ def find_parent(doc, elt):
 
 # Transforms
 # ------------------------------------------------------------------------------
+
+# Warning: proof sections won't end with tombstones.
+# Need to be handle in js.
 def lightweight_sections(doc, level=3):
     list_count = [0]
     List = (OrderedList, BulletList, DefinitionList)
