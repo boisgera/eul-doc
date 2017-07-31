@@ -247,8 +247,10 @@ def main():
     args = sys.argv[1:]
     doc = pandoc.read(json.load(sys.stdin))
     if "--pdf" in args:
+        pass
         doc = today(doc)
     else:
+        pass
         doc = lightweight_sections(doc)
         doc = auto_identifiers(doc)
         doc = autolink_headings(doc)
