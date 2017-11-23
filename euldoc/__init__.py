@@ -64,7 +64,7 @@ def handle_separators(doc, mode="html"):
     for separator in separators:
         # find the separator parent and location in parent
         parent = find_parent(doc, separator)
-        print >> sys.stderr, elt, parent
+        #print >> sys.stderr, elt, parent
         i = -1
         for i, elt in enumerate(parent):
             if parent[i] is separator:
@@ -75,7 +75,7 @@ def handle_separators(doc, mode="html"):
         else:
             del parent[i] 
 
-    print >> sys.stderr, "*", doc
+    #print >> sys.stderr, "*", doc
 
     return doc
 
