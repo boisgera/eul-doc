@@ -58,6 +58,24 @@ def find_parent(doc, elt):
 # Transforms
 # ------------------------------------------------------------------------------
 
+def separator_make_anonymous_sections(doc):
+    # Pandoc has a very little support for in-place substitution
+    separators = [elt for elt in iter(doc) if isinstance(elt, HorizontalRule)]
+    for separator in separators:
+        # find the separator parent and location in parent
+        parent = find_parent(doc, separator)
+        print >> sys.stderr, elt, parent
+        i = -1
+        for i, elt in enumerate(parent):
+            if parent[i] is separator:
+                break
+        # substitute an empty level 3 header
+        parent[i] = Header(3, (u"", [], []), []) 
+
+    print >> sys.stderr, "*", doc
+
+    return doc
+
 # Warning: proof sections won't end with tombstones.
 # Need to be handle in js.
 def lightweight_sections(doc, level=3):
@@ -251,6 +269,7 @@ def main():
         doc = today(doc)
     else:
         pass
+        doc = separator_make_anonymous_sections(doc)
         doc = lightweight_sections(doc)
         doc = auto_identifiers(doc)
         doc = autolink_headings(doc)
