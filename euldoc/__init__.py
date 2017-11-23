@@ -58,7 +58,7 @@ def find_parent(doc, elt):
 # Transforms
 # ------------------------------------------------------------------------------
 
-def separator_make_anonymous_sections(doc):
+def handle_separators(doc, mode="html"):
     # Pandoc has a very little support for in-place substitution
     separators = [elt for elt in iter(doc) if isinstance(elt, HorizontalRule)]
     for separator in separators:
@@ -70,7 +70,10 @@ def separator_make_anonymous_sections(doc):
             if parent[i] is separator:
                 break
         # substitute an empty level 3 header
-        parent[i] = Header(3, (u"", [], []), []) 
+        if mode == "html":
+            parent[i] = Header(3, (u"", [], []), [])
+        else:
+            del parent[i] 
 
     print >> sys.stderr, "*", doc
 
@@ -265,11 +268,12 @@ def main():
     args = sys.argv[1:]
     doc = pandoc.read(json.load(sys.stdin))
     if "--pdf" in args:
-        pass
+        mode = "pdf"
         doc = today(doc)
+        doc = handle_separators(doc, mode)
     else:
-        pass
-        doc = separator_make_anonymous_sections(doc)
+        mode = "html"
+        doc = handle_separators(doc, mode)
         doc = lightweight_sections(doc)
         doc = auto_identifiers(doc)
         doc = autolink_headings(doc)
