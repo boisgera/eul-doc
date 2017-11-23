@@ -79,6 +79,26 @@ def handle_separators(doc, mode="html"):
 
     return doc
 
+def remove_preview_links(doc):
+    # Pandoc has a very little support for in-place substitution
+    links = [elt for elt in iter(doc) if isinstance(elt, Link)]
+    for link in links:
+        classes = link[0][1]
+        if "preview" in classes:
+            # find the link parent (a list) and location in parent
+            parent = find_parent(doc, link)
+            i = -1
+            for i, elt in enumerate(parent):
+                if parent[i] is link:
+                    break
+            # substitute to the links its content
+            inlines = link[1]
+            del parent[i]
+            for inline in inlines:
+                parent.insert(i+1, inline)
+                i += 1
+    return doc
+
 # Warning: proof sections won't end with tombstones.
 # Need to be handle in js.
 def lightweight_sections(doc, level=3):
@@ -271,6 +291,7 @@ def main():
         mode = "pdf"
         doc = today(doc)
         doc = handle_separators(doc, mode)
+        doc = remove_preview_links(doc)
     else:
         mode = "html"
         doc = handle_separators(doc, mode)
