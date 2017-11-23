@@ -93,9 +93,12 @@ def remove_preview_links(doc):
                     break
             # substitute to the links its content
             inlines = link[1]
+            #print >> sys.stderr, "------------------------------"
+            #print >> sys.stderr, "pre-del", parent 
             del parent[i]
             for inline in inlines:
-                parent.insert(i+1, inline)
+                #print >> sys.stderr, "*", parent, inline, i
+                parent.insert(i, inline)
                 i += 1
     return doc
 
