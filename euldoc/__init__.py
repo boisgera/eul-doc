@@ -124,7 +124,7 @@ def lightweight_sections(doc, level=3):
     for para in paras:
         blocks = find_parent(doc, para)
         content = para[0].pop(0)[0]
-        zwnj = RawInline(Format("html"), u"&zwnj;")
+        zwnj = RawInline(Format(u"html"), u"&zwnj;")
         if len(para[0]) >= 1 and para[0][0] == Space():
             para[0].pop(0)
         para[0].insert(0, zwnj)
@@ -134,7 +134,7 @@ def lightweight_sections(doc, level=3):
         for index, elt in enumerate(blocks):
             if elt is para:
               break
-        header = Header(level, ("", [], []), content)
+        header = Header(level, (u"", [], []), content)
         blocks.insert(index, header)
     return doc
 
@@ -169,11 +169,11 @@ def string_id(inlines):
         else:
             raise TypeError("invalid type {0!r}".format(type_))
         parts.append(part)
-    text = "".join(parts)
+    text = u"".join(parts)
     text = text.lower()
-    text = text.replace(" ", "-")
-    text = re.sub("[^a-z0-9\_\-\.]","", text)
-    match = re.search("[a-z].*", text)
+    text = text.replace(u" ", u"-")
+    text = re.sub(u"[^a-z0-9\_\-\.]","", text)
+    match = re.search(u"[a-z].*", text)
     if match is not None:
         return match.group()
     else:
@@ -210,7 +210,7 @@ def autolink_headings(doc):
     title = meta.get("title")
     if title is not None and type(title) is MetaInlines:
         inlines = title[0]
-        title[0] = [Link(("", [], []), inlines, ("#", ""))]
+        title[0] = [Link((u"", [], []), inlines, (u"#", u""))]
 
     headers = [elt for elt in iter(doc) if type(elt) is Header]
     for header in headers:
@@ -219,8 +219,8 @@ def autolink_headings(doc):
         # apply the outer linkage for consistency.
         if not any(elt for elt in iter(header[2]) if type(elt) is Link): 
             id_ = header[1][0]
-            target = ("#"+id_, "")
-            link = Link(("", [], []), header[2], target)
+            target = (u"#"+id_, u"")
+            link = Link((u"", [], []), header[2], target)
             header[2] = [link]
     return doc
 
@@ -231,7 +231,7 @@ def convert_images(doc):
         url, title = target
         base, ext = os.path.splitext(url)
         svg_url = base + ".svg"
-        if svg_url.startswith("http://"):
+        if svg_url.startswith(u"http://"):
             open_ = urllib2.open
         else:
             open_ = open
@@ -251,7 +251,7 @@ def hfill(doc):
     def match(elt):
         if type(elt) is RawInline:
             format, text = elt[:]
-            if format == Format("tex") and text.strip() == u"\\hfill":
+            if format == Format(u"tex") and text.strip() == u"\\hfill":
                 return True
         return False
 
@@ -261,9 +261,9 @@ def hfill(doc):
         for index, elt in enumerate(inlines):
             if elt is hfill_:
               break
-        style = "float:right;"
-        zwnj = RawInline(Format("html"), u"&zwnj;") # I hate you CSS.
-        span = Span(("", ["tombstone"], [("style", style)]), [zwnj] + inlines[index:])
+        style = u"float:right;"
+        zwnj = RawInline(Format(u"html"), u"&zwnj;") # I hate you CSS.
+        span = Span((u"", [u"tombstone"], [(u"style", style)]), [zwnj] + inlines[index:])
         inlines[:] = inlines[:index] + [span]
     return doc
 
