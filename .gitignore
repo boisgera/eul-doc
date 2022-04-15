@@ -1,0 +1,10 @@
+# Python
+setup.cfg
+*.pyc
+eul_doc.egg-info
+build
+dist
+
+# Misc.
+*~
+.lib
